@@ -7,6 +7,7 @@
 
 #include <cinchtest.h>
 
+#include <flecsi-config.h>
 #include <flecsi/utils/common.h>
 #include <flecsi/utils/const_string.h>
 #include <flecsi/utils/dag.h>
@@ -41,7 +42,10 @@ operator << (std::ostream & stream, node_policy_t const & node) {
 } // operator <<
 
 using dag_t = flecsi::utils::dag__<node_policy_t>;
+
+#if defined(FLECSI_ENABLE_GRAPHVIZ)
 using graphviz_t = flecsi::utils::graphviz_t;
+#endif
 
 #define flecsi_hash(name) \
   flecsi::utils::const_string_t{EXPAND_AND_STRINGIFY(name)}.hash()
@@ -58,19 +62,19 @@ TEST(dag, sanity) {
 
   dag_t dag;
 
-  dag.initialize_node({ "e", e, 0x10 | 0x20 }); 
-  dag.initialize_node({ "f", f, 0x20 | 0x40 }); 
-  dag.initialize_node({ "g", g, 0x40 | 0x80 }); 
+  dag.initialize_node({ e, "e", 0x10 | 0x20 }); 
+  dag.initialize_node({ f, "f", 0x20 | 0x40 }); 
+  dag.initialize_node({ g, "g", 0x40 | 0x80 }); 
 
   dag.add_edge(b, a);
   dag.add_edge(c, a);
   dag.add_edge(c, b);
   dag.add_edge(e, d);
 
-  dag.initialize_node({ "a", a, 0x01 | 0x02 }); 
-  dag.initialize_node({ "b", b, 0x02 | 0x04 }); 
-  dag.initialize_node({ "c", c, 0x04 | 0x08 }); 
-  dag.initialize_node({ "d", d, 0x08 | 0x10 }); 
+  dag.initialize_node({ a, "a", 0x01 | 0x02 }); 
+  dag.initialize_node({ b, "b", 0x02 | 0x04 }); 
+  dag.initialize_node({ c, "c", 0x04 | 0x08 }); 
+  dag.initialize_node({ d, "d", 0x08 | 0x10 }); 
 
   dag.add_edge(e, b);
   dag.add_edge(e, f);
@@ -81,8 +85,10 @@ TEST(dag, sanity) {
 
   std::cout << dag << std::endl;
 
+#if defined(FLECSI_ENABLE_GRAPHVIZ)
   graphviz_t gv;
   dag.add(gv);
   gv.write("dag.gv");
+#endif
 
 } // TEST
