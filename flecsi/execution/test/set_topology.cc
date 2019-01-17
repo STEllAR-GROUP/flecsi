@@ -39,10 +39,10 @@ public:
     >;
 };
 
-using set_t = set_topology__<set_types>;
+using set_t = set_topology_u<set_types>;
 
 template<typename DC, size_t PS>
-using client_handle_t = data_client_handle__<DC, PS>;
+using client_handle_t = data_client_handle_u<DC, PS>;
 
 void task1(client_handle_t<set_t, wo> sh) {
   auto e1 = sh.make<entity1>();
@@ -60,8 +60,8 @@ void task2(client_handle_t<set_t, ro> sh) {
 
 flecsi_register_data_client(set_t, sets, set1); 
 
-flecsi_register_task_simple(task1, loc, single);
-flecsi_register_task_simple(task2, loc, single);
+flecsi_register_task_simple(task1, loc, index);
+flecsi_register_task_simple(task2, loc, index);
 
 namespace flecsi {
 namespace execution {
@@ -77,8 +77,8 @@ void specialization_spmd_init(int argc, char ** argv) {
 void driver(int argc, char ** argv) {
   auto sh = flecsi_get_client_handle(set_t, sets, set1);
 
-  //flecsi_execute_task_simple(task1, single, sh);
-//  flecsi_execute_task_simple(task2, single, sh);
+// /flecsi_execute_task_simple(task1, index, sh);
+//  flecsi_execute_task_simple(task2, index, sh);
 }
 
 } // namespace execution

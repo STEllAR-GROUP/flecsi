@@ -1,7 +1,16 @@
-/*~-------------------------------------------------------------------------~~*
- * Copyright (c) 2014 Los Alamos National Security, LLC
- * All rights reserved.
- *~-------------------------------------------------------------------------~~*/
+/*
+    @@@@@@@@  @@           @@@@@@   @@@@@@@@ @@
+   /@@/////  /@@          @@////@@ @@////// /@@
+   /@@       /@@  @@@@@  @@    // /@@       /@@
+   /@@@@@@@  /@@ @@///@@/@@       /@@@@@@@@@/@@
+   /@@////   /@@/@@@@@@@/@@       ////////@@/@@
+   /@@       /@@/@@//// //@@    @@       /@@/@@
+   /@@       @@@//@@@@@@ //@@@@@@  @@@@@@@@ /@@
+   //       ///  //////   //////  ////////  //
+
+   Copyright (c) 2016, Los Alamos National Security, LLC
+   All rights reserved.
+                                                                              */
 
 #include <bitset>
 #include <tuple>
@@ -11,6 +20,7 @@
 #include <cinchtest.h>
 #include <flecsi/control/control.h>
 #include <flecsi/control/phase_walker.h>
+#include <flecsi/utils/macros.h>
 
 /*----------------------------------------------------------------------------*
  * Define simulation phases. This is considered part of the specialization.
@@ -43,7 +53,7 @@ using namespace flecsi::control;
 
 struct control_policy_t {
 
-  using control_t = control__<control_policy_t>;
+  using control_t = control_u<control_policy_t>;
 
   /*!
    */
@@ -52,7 +62,7 @@ struct control_policy_t {
     return control_t::instance().step()++ < 5;
   } // evolve
 
-  using evolve = cycle__<
+  using evolve = cycle_u<
     evolve_control, // stopping predicate
     phase_<advance>,
     phase_<analyze>,
@@ -110,7 +120,7 @@ operator << (std::ostream & stream, control_policy_t::node_t const & node) {
  * Define control policy type.
  *----------------------------------------------------------------------------*/
 
-using control_t = control__<control_policy_t>;
+using control_t = control_u<control_policy_t>;
 
 /*----------------------------------------------------------------------------*
  * Convenience

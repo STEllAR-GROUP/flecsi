@@ -30,6 +30,8 @@
 #include <flecsi/execution/context.h>
 #include <flecsi/coloring/mpi_utils.h>
 
+#include <flecsi/utils/tuple_walker.h>
+
 namespace flecsi {
 namespace execution {
 
@@ -41,7 +43,7 @@ namespace execution {
    @ingroup execution
    */
 
-  struct task_prolog_t : public utils::tuple_walker__<task_prolog_t>
+  struct task_prolog_t : public flecsi::utils::tuple_walker_u<task_prolog_t>
   {
 
     /*!
@@ -72,7 +74,7 @@ namespace execution {
     >
     void
     handle(
-     dense_accessor__<
+     dense_accessor_u<
        T,
        EXCLUSIVE_PERMISSIONS,
        SHARED_PERMISSIONS,
@@ -89,7 +91,7 @@ namespace execution {
     >
     void
     handle(
-     global_accessor__<
+     global_accessor_u<
        T,
        PERMISSIONS
      > & a
@@ -181,7 +183,7 @@ namespace execution {
     >
     typename std::enable_if_t<std::is_base_of<topology::mesh_topology_base_t, T>::value>
     handle(
-      data_client_handle__<T, PERMISSIONS> & h
+      data_client_handle_u<T, PERMISSIONS> & h
     )
     {
       auto& context_ = context_t::instance();
@@ -266,7 +268,8 @@ namespace execution {
           execution::context_t::instance().register_field_data(adj.index_fid,
                                                                size);
         }
-        adj.indices_buf = reinterpret_cast<id_t *>(registered_field_data[adj.index_fid].data());
+        adj.indices_buf = reinterpret_cast<utils::id_t *>(
+					registered_field_data[adj.index_fid].data());
 
         storage->init_connectivity(adj.from_domain, adj.to_domain,
                                    adj.from_dim, adj.to_dim,
@@ -293,7 +296,8 @@ namespace execution {
         }
         // assign the storage to the buffer
         iss.indices_buf =
-          reinterpret_cast<id_t *>(registered_field_data[iss.index_fid].data());
+          reinterpret_cast<utils::id_t *>(
+					registered_field_data[iss.index_fid].data());
       	// now initialize the index subspace
         storage->init_index_subspace(
         	iss.index_space,
@@ -324,7 +328,7 @@ namespace execution {
     >
     typename std::enable_if_t<std::is_base_of<topology::set_topology_base_t, T>::value>
     handle(
-      data_client_handle__<T, PERMISSIONS> & h
+      data_client_handle_u<T, PERMISSIONS> & h
     )
     {
       auto& context_ = context_t::instance();
