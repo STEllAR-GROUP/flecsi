@@ -42,10 +42,11 @@ class Flecsi(CMakePackage):
     depends_on('cmake@3.12:', type='build')
     depends_on('mpi', when='runtime=mpi')
     depends_on('mpi', when='runtime=legion')
-    depends_on('hpx', when='runtime=hpx')
+    depends_on('hpx@master cxxstd=14', when='runtime=hpx')
     depends_on('legion@ctrl-rep-2 +shared +mpi +hdf5', when='runtime=legion +hdf5')
     depends_on('legion@ctrl-rep-2 +shared +mpi', when='runtime=legion ~hdf5')
-    depends_on('boost@1.59.0: cxxstd=11 +program_options')
+    depends_on('boost@1.70.0: cxxstd=14 +program_options', when='runtime=hpx')
+    depends_on('boost@1.59.0: cxxstd=11 +program_options', when='runtime~hpx')
     depends_on('parmetis@4.0.3:')
     depends_on('hdf5', when='+hdf5')
     depends_on('caliper', when='+caliper')
@@ -64,6 +65,9 @@ class Flecsi(CMakePackage):
             options.append('-DFLECSI_RUNTIME_MODEL=legion')
         elif self.spec.variants['runtime'].value == 'mpi':
             options.append('-DFLECSI_RUNTIME_MODEL=mpi')
+        elif self.spec.variants['runtime'].value == 'hpx':
+            options.append('-DFLECSI_RUNTIME_MODEL=hpx')
+            options.append('-DENABLE_MPI=ON')
 
         if '+tutorial' in self.spec:
             options.append('-DENABLE_FLECSIT=ON')
