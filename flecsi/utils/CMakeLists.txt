@@ -134,11 +134,10 @@ endif()
 cinch_add_unit(factory
   SOURCES
     test/factory.cc
+    ${utils_SOURCES}
   INPUTS
     test/factory.blessed
     ${factory_blessed_input}
-  LIBRARIES
-    FleCSI
 )
 
 cinch_add_unit(fixed_vector
@@ -192,10 +191,9 @@ cinch_add_unit(static_verify
 cinch_add_unit(test_utility
   SOURCES
     test/utility.cc
+    ${utils_SOURCES}
   INPUTS
     test/utility.blessed.gnug
-  LIBRARIES
-    FleCSI
 )
 
 set(tuple_type_converter_blessed_input test/tuple_type_converter.blessed.gnug)
@@ -207,10 +205,9 @@ endif()
 cinch_add_unit(tuple_type_converter
   SOURCES
     test/tuple_type_converter.cc
+    ${utils_SOURCES}
   INPUTS
     ${tuple_type_converter_blessed_input}
-  LIBRARIES
-    FleCSI
 )
 
 cinch_add_unit(tuple_wrapper
@@ -229,10 +226,9 @@ endif()
 cinch_add_unit(array_ref
   SOURCES
     test/array_ref.cc
+    ${utils_SOURCES}
   INPUTS
     test/array_ref.blessed ${array_ref_blessed_input}
-  LIBRARIES
-    FleCSI
 )
 
 set(common_blessed_input test/common.blessed.gnug)
@@ -244,10 +240,9 @@ endif()
 cinch_add_unit(common
   SOURCES
     test/common.cc
+    ${utils_SOURCES}
   INPUTS
     test/common.blessed.ppc test/common.blessed ${common_blessed_input}
-  LIBRARIES
-    FleCSI
 )
 
 set(id_blessed_input test/id.blessed.gnug)
@@ -259,10 +254,9 @@ endif()
 cinch_add_unit(id
   SOURCES
     test/id.cc
+    ${utils_SOURCES}
   INPUTS
     test/id.blessed ${id_blessed_input}
-  LIBRARIES
-    FleCSI
 )
 
 if(ENABLE_OPENSSL)
