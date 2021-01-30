@@ -198,7 +198,6 @@ struct hpx_context_policy_t {
 
   struct index_space_data_t {
     std::map<field_id_t, bool> ghost_is_readable;
-    std::map<field_id_t, execution::hpx_future_u<void>> future;
   };
 
   struct index_subspace_data_t {
@@ -664,6 +663,7 @@ struct hpx_context_policy_t {
     auto it = sparse_field_data.find(fid);
     if(it == sparse_field_data.end()) {
       sparse_field_data.emplace(fid, std::move(new_field));
+      sparse_field_futures.insert({fid, execution::hpx_future_u<void>{}});
     }
     else {
       it->second = std::move(new_field);
@@ -678,6 +678,11 @@ struct hpx_context_policy_t {
   registered_sparse_field_metadata() {
     return sparse_field_metadata;
   };
+
+  std::map<field_id_t, execution::hpx_future_u<void>> &
+  registered_sparse_field_futures() {
+    return sparse_field_futures;
+  }
 
   std::map<size_t, MPI_Op> & reduction_operations() {
     return reduction_ops_;
@@ -835,6 +840,7 @@ public:
 
   std::map<field_id_t, sparse_field_data_t> sparse_field_data;
   std::map<field_id_t, sparse_field_metadata_t> sparse_field_metadata;
+  std::map<field_id_t, execution::hpx_future_u<void>> sparse_field_futures;
 
   std::map<size_t, MPI_Op> reduction_ops_;
 

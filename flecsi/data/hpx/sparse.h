@@ -126,7 +126,11 @@ struct storage_class_u<ragged> {
     hb.ghost_is_readable =
       &(ism[field_info.index_space].ghost_is_readable[field_info.fid]);
 
-    hb.future = &(ism[field_info.index_space].future[field_info.fid]);
+    auto & sparse_registered_field_futures =
+      context.registered_sparse_field_futures();
+    hb.future = &sparse_registered_field_futures[field_info.fid];
+
+    //    hb.future = &(ism[field_info.index_space].future[field_info.fid]);
 
     return h;
   }

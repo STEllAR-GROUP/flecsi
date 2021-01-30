@@ -85,7 +85,7 @@ struct task_add_dependencies_t
     size_t SHARED_PERMISSIONS,
     size_t GHOST_PERMISSIONS>
   void handle(Dense & a,
-    dense_accessor<T,
+    dense_accessor_u<T,
       EXCLUSIVE_PERMISSIONS,
       SHARED_PERMISSIONS,
       GHOST_PERMISSIONS> &) {
@@ -94,6 +94,7 @@ struct task_add_dependencies_t
     if constexpr((EXCLUSIVE_PERMISSIONS != ro && EXCLUSIVE_PERMISSIONS != na) ||
                  (SHARED_PERMISSIONS != ro && SHARED_PERMISSIONS != na) ||
                  (GHOST_PERMISSIONS != ro && GHOST_PERMISSIONS != na)) {
+      clog_assert(a.future != nullptr, "invalid future handle");
       *a.future = future;
       has_dependencies = true;
     }
@@ -103,10 +104,9 @@ struct task_add_dependencies_t
   void handle(Global & a, global_accessor_u<T, PERMISSIONS> &) {
     // Skip Read Only handles
     if constexpr(PERMISSIONS != ro && PERMISSIONS != na) {
-      if(a.future != nullptr) {
-        *a.future = future;
-        has_dependencies = true;
-      }
+      clog_assert(a.future != nullptr, "invalid future handle");
+      *a.future = future;
+      has_dependencies = true;
     }
   } // handle
 
@@ -114,10 +114,9 @@ struct task_add_dependencies_t
   void handle(Local & a, color_accessor_u<T, PERMISSIONS> &) {
     // Skip Read Only handles
     if constexpr(PERMISSIONS != ro && PERMISSIONS != na) {
-      if(a.future != nullptr) {
-        *a.future = future;
-        has_dependencies = true;
-      }
+      clog_assert(a.future != nullptr, "invalid future handle");
+      *a.future = future;
+      has_dependencies = true;
     }
   } // handle
 
@@ -127,7 +126,7 @@ struct task_add_dependencies_t
     size_t SHARED_PERMISSIONS,
     size_t GHOST_PERMISSIONS>
   void handle(Ragged & a,
-    ragged_accessor<T,
+    ragged_accessor_u<T,
       EXCLUSIVE_PERMISSIONS,
       SHARED_PERMISSIONS,
       GHOST_PERMISSIONS> &) {
@@ -136,6 +135,7 @@ struct task_add_dependencies_t
     if constexpr((EXCLUSIVE_PERMISSIONS != ro && EXCLUSIVE_PERMISSIONS != na) ||
                  (SHARED_PERMISSIONS != ro && SHARED_PERMISSIONS != na) ||
                  (GHOST_PERMISSIONS != ro && GHOST_PERMISSIONS != na)) {
+      clog_assert(a.future != nullptr, "invalid future handle");
       *a.future = future;
       has_dependencies = true;
     }
@@ -156,25 +156,28 @@ struct task_add_dependencies_t
 
   template<typename Ragged, typename T2>
   void handle(Ragged & r1, ragged_mutator<T2> & r2) {
+    clog_assert(r1.future != nullptr, "invalid future handle");
     *r1.future = future;
     has_dependencies = true;
   }
 
   template<typename Sparse, typename T2>
   void handle(Sparse & m1, sparse_mutator<T2> & m2) {
+    clog_assert(m1.future != nullptr, "invalid future handle");
     *m1.future = future;
     has_dependencies = true;
   }
 
-  template<typename Client, typename T, size_t PERMISSIONS>
-  void handle(Client & h, data_client_handle_u<T, PERMISSIONS> &) {
-
-    // Skip Read Only handles
-    if constexpr(PERMISSIONS != ro && PERMISSIONS != na) {
-      *h.future = future;
-      has_dependencies = true;
-    }
-  }
+  //   template<typename Client, typename T, size_t PERMISSIONS>
+  //   void handle(Client & h, data_client_handle_u<T, PERMISSIONS> &) {
+  //
+  //     // Skip Read Only handles
+  //     if constexpr(PERMISSIONS != ro && PERMISSIONS != na) {
+  //       clog_assert(h.future != nullptr, "invalid future handle");
+  //       *h.future = future;
+  //       has_dependencies = true;
+  //     }
+  //   }
 
   /*!
     Handle individual list items

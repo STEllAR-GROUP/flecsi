@@ -95,7 +95,7 @@ struct task_collect_dependencies_t
   } // handle
 
   template<typename T, size_t PERMISSIONS>
-  void handle(global_accessor_u<T, PERMISSIONS> & a) {
+  void handle(global_accessor<T, PERMISSIONS> & a) {
     auto & h = a.handle;
 
     clog_assert(h.future != nullptr, "invalid future handle");
@@ -105,7 +105,7 @@ struct task_collect_dependencies_t
   } // handle
 
   template<typename T, size_t PERMISSIONS>
-  void handle(color_accessor_u<T, PERMISSIONS> & a) {
+  void handle(color_accessor<T, PERMISSIONS> & a) {
     auto & h = a.handle;
 
     clog_assert(h.future != nullptr, "invalid future handle");
@@ -151,14 +151,14 @@ struct task_collect_dependencies_t
     handle(m.ragged);
   }
 
-  template<typename T, size_t PERMISSIONS>
-  void handle(data_client_handle_u<T, PERMISSIONS> h) {
-
-    clog_assert(h.future != nullptr, "invalid future handle");
-    if(h.future->valid()) {
-      dependencies_.push_back(*h.future);
-    }
-  }
+  //   template<typename T, size_t PERMISSIONS>
+  //   void handle(data_client_handle_u<T, PERMISSIONS> h) {
+  //
+  //     clog_assert(h.future != nullptr, "invalid future handle");
+  //     if(h.future->valid()) {
+  //       dependencies_.push_back(*h.future);
+  //     }
+  //   }
 
   /*!
    Handle individual list items
