@@ -185,6 +185,10 @@ struct storage_class_u<global> {
     h.state = context.execution_state();
 
     auto & registered_field_futures = context.registered_field_futures();
+    clog_assert(registered_field_futures.find(field_info.fid) !=
+                  registered_field_futures.end(),
+      "attempt to refer to unknown field");
+
     h.future = &registered_field_futures[field_info.fid];
 
     h.ghost_is_readable = nullptr;

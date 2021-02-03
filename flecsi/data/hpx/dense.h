@@ -190,6 +190,10 @@ struct storage_class_u<storage_label_type_t::dense> {
       &(ism[field_info.index_space].ghost_is_readable[field_info.fid]);
 
     auto & registered_field_futures = context.registered_field_futures();
+    clog_assert(registered_field_futures.find(field_info.fid) !=
+        registered_field_futures.end(),
+        "attempt to refer to unknown field");
+
     hb.future = &registered_field_futures[field_info.fid];
 
     //    hb.future = &(ism[field_info.index_space].future[field_info.fid]);

@@ -30,8 +30,9 @@
  @date Initial file creation: November 16, 2020
  */
 
+#include <cstdint>
 #include <cstring>
-#include <stdint.h>
+#include <mutex>
 #include <vector>
 
 #include "mpi.h"
@@ -58,6 +59,8 @@ namespace execution {
 
 struct task_collect_dependencies_t
   : public flecsi::utils::tuple_walker_u<task_collect_dependencies_t> {
+
+  using spinlock_pool = hpx::util::spinlock_pool<execution::hpx_future_u<void>>;
 
   /*!
    Construct a task_collect_dependencies_t instance.
@@ -89,8 +92,16 @@ struct task_collect_dependencies_t
     auto & h = a.handle;
 
     clog_assert(h.future != nullptr, "invalid future handle");
-    if(h.future->valid()) {
-      dependencies_.push_back(*h.future);
+
+    execution::hpx_future_u<void> f;
+    {
+      std::lock_guard<hpx::util::detail::spinlock> l(
+        spinlock_pool::spinlock_for(h.future));
+      f = *h.future;
+    }
+
+    if(f.valid()) {
+      dependencies_.emplace_back(std::move(f));
     }
   } // handle
 
@@ -99,8 +110,16 @@ struct task_collect_dependencies_t
     auto & h = a.handle;
 
     clog_assert(h.future != nullptr, "invalid future handle");
-    if(h.future->valid()) {
-      dependencies_.push_back(*h.future);
+
+    execution::hpx_future_u<void> f;
+    {
+      std::lock_guard<hpx::util::detail::spinlock> l(
+        spinlock_pool::spinlock_for(h.future));
+      f = *h.future;
+    }
+
+    if(f.valid()) {
+      dependencies_.emplace_back(std::move(f));
     }
   } // handle
 
@@ -109,8 +128,16 @@ struct task_collect_dependencies_t
     auto & h = a.handle;
 
     clog_assert(h.future != nullptr, "invalid future handle");
-    if(h.future->valid()) {
-      dependencies_.push_back(*h.future);
+
+    execution::hpx_future_u<void> f;
+    {
+      std::lock_guard<hpx::util::detail::spinlock> l(
+        spinlock_pool::spinlock_for(h.future));
+      f = *h.future;
+    }
+
+    if(f.valid()) {
+      dependencies_.emplace_back(std::move(f));
     }
   } // handle
 
@@ -125,8 +152,16 @@ struct task_collect_dependencies_t
     auto & h = a.handle;
 
     clog_assert(h.future != nullptr, "invalid future handle");
-    if(h.future->valid()) {
-      dependencies_.push_back(*h.future);
+
+    execution::hpx_future_u<void> f;
+    {
+      std::lock_guard<hpx::util::detail::spinlock> l(
+        spinlock_pool::spinlock_for(h.future));
+      f = *h.future;
+    }
+
+    if(f.valid()) {
+      dependencies_.emplace_back(std::move(f));
     }
   } // handle
 

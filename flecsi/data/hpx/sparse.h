@@ -128,6 +128,10 @@ struct storage_class_u<ragged> {
 
     auto & sparse_registered_field_futures =
       context.registered_sparse_field_futures();
+    clog_assert(sparse_registered_field_futures.find(field_info.fid) !=
+        sparse_registered_field_futures.end(),
+        "attempt to refer to unknown field");
+
     hb.future = &sparse_registered_field_futures[field_info.fid];
 
     //    hb.future = &(ism[field_info.index_space].future[field_info.fid]);

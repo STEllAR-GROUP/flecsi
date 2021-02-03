@@ -31,6 +31,7 @@
  */
 
 #include <cstdint>
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -58,6 +59,8 @@ namespace execution {
 
 struct task_add_dependencies_t
   : public flecsi::utils::tuple_walker_u<task_add_dependencies_t> {
+
+  using spinlock_pool = hpx::util::spinlock_pool<execution::hpx_future_u<void>>;
 
   /*!
    Construct a task_add_dependencies_t instance.
@@ -95,7 +98,11 @@ struct task_add_dependencies_t
                  (SHARED_PERMISSIONS != ro && SHARED_PERMISSIONS != na) ||
                  (GHOST_PERMISSIONS != ro && GHOST_PERMISSIONS != na)) {
       clog_assert(a.future != nullptr, "invalid future handle");
-      *a.future = future;
+      {
+        std::lock_guard<hpx::util::detail::spinlock> l(
+          spinlock_pool::spinlock_for(a.future));
+        *a.future = future;
+      }
       has_dependencies = true;
     }
   } // handle
@@ -105,7 +112,11 @@ struct task_add_dependencies_t
     // Skip Read Only handles
     if constexpr(PERMISSIONS != ro && PERMISSIONS != na) {
       clog_assert(a.future != nullptr, "invalid future handle");
-      *a.future = future;
+      {
+        std::lock_guard<hpx::util::detail::spinlock> l(
+          spinlock_pool::spinlock_for(a.future));
+        *a.future = future;
+      }
       has_dependencies = true;
     }
   } // handle
@@ -115,7 +126,11 @@ struct task_add_dependencies_t
     // Skip Read Only handles
     if constexpr(PERMISSIONS != ro && PERMISSIONS != na) {
       clog_assert(a.future != nullptr, "invalid future handle");
-      *a.future = future;
+      {
+        std::lock_guard<hpx::util::detail::spinlock> l(
+          spinlock_pool::spinlock_for(a.future));
+        *a.future = future;
+      }
       has_dependencies = true;
     }
   } // handle
@@ -136,7 +151,11 @@ struct task_add_dependencies_t
                  (SHARED_PERMISSIONS != ro && SHARED_PERMISSIONS != na) ||
                  (GHOST_PERMISSIONS != ro && GHOST_PERMISSIONS != na)) {
       clog_assert(a.future != nullptr, "invalid future handle");
-      *a.future = future;
+      {
+        std::lock_guard<hpx::util::detail::spinlock> l(
+          spinlock_pool::spinlock_for(a.future));
+        *a.future = future;
+      }
       has_dependencies = true;
     }
   } // handle
