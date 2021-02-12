@@ -187,16 +187,16 @@ struct task_add_dependencies_t
     has_dependencies = true;
   }
 
-  //   template<typename Client, typename T, size_t PERMISSIONS>
-  //   void handle(Client & h, data_client_handle_u<T, PERMISSIONS> &) {
-  //
-  //     // Skip Read Only handles
-  //     if constexpr(PERMISSIONS != ro && PERMISSIONS != na) {
-  //       clog_assert(h.future != nullptr, "invalid future handle");
-  //       *h.future = future;
-  //       has_dependencies = true;
-  //     }
-  //   }
+  template<typename Client, typename T, size_t PERMISSIONS>
+  void handle(Client & h, data_client_handle_u<T, PERMISSIONS> &) {
+
+    // Skip Read Only handles
+    if constexpr(PERMISSIONS != ro && PERMISSIONS != na) {
+      clog_assert(h.future != nullptr, "invalid future handle");
+      *h.future = future;
+      has_dependencies = true;
+    }
+  }
 
   /*!
     Handle individual list items
@@ -238,7 +238,7 @@ struct task_add_dependencies_t
   /*!
     This method is called on any task arguments that are not handles, e.g.
     scalars or those that did not need any special handling.
-   */
+    */
   template<typename T1, typename T2>
   void handle(T1 &, T2 &) {} // handle
 

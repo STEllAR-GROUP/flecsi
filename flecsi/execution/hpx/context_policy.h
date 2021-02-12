@@ -198,6 +198,7 @@ struct hpx_context_policy_t {
 
   struct index_space_data_t {
     std::map<field_id_t, bool> ghost_is_readable;
+    std::map<field_id_t, execution::hpx_future_u<void>> future;
   };
 
   struct index_subspace_data_t {
