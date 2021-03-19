@@ -373,9 +373,9 @@ struct task_prolog_t : public flecsi::utils::tuple_walker_u<task_prolog_t> {
 
       for(auto rank = 0; rank < num_colors; ++rank) {
         ghostSize[rank] +=
-          static_cast<MPI_Request>(field_metadata.ghost_field_sizes[rank]);
+          field_metadata.ghost_field_sizes[rank];
         sharedSize[rank] +=
-          static_cast<MPI_Request>(field_metadata.shared_field_sizes[rank]);
+          field_metadata.shared_field_sizes[rank];
       }
 
       exchange_queue.pop();
@@ -523,10 +523,10 @@ struct task_prolog_t : public flecsi::utils::tuple_walker_u<task_prolog_t> {
           auto gsize = ghost_sizes.find(el.first);
           if(gsize != ghost_sizes.end())
             gsize->second +=
-              static_cast<MPI_Datatype>(count * field_data.type_size);
+              count * field_data.type_size;
           else
             ghost_sizes[el.first] =
-              static_cast<MPI_Datatype>(count * field_data.type_size);
+              count * field_data.type_size;
         }
       }
 
@@ -539,10 +539,10 @@ struct task_prolog_t : public flecsi::utils::tuple_walker_u<task_prolog_t> {
           auto ssize = shared_sizes.find(el.first);
           if(ssize != shared_sizes.end())
             ssize->second +=
-              static_cast<MPI_Datatype>(count * field_data.type_size);
+              count * field_data.type_size;
           else
             shared_sizes[el.first] =
-              static_cast<MPI_Datatype>(count * field_data.type_size);
+              count * field_data.type_size;
         }
       }
 

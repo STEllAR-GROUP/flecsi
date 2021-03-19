@@ -78,6 +78,8 @@ struct mpi_future_u<void, launch> {
    */
   void wait() {}
 
+  void get(){};
+
 }; // struct mpi_future_u
 
 template<typename RETURN, launch_type_t launch>

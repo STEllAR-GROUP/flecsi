@@ -55,6 +55,8 @@ public:
   virtual void init_future(void) = 0;
 
   virtual void finalize_future(void) = 0;
+
+  void get(){};
 };
 
 /*!
